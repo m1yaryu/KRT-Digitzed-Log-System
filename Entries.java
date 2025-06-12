@@ -38,7 +38,7 @@ public class Entries {
 
     public static Object[] medicalInidentInput() {
         String[] labels = {"Patient Name: ", "Age: ", "Location: ", "Principal Complaint: ", "Actions Taken: ", "Personnel Present: ", "Remarks: "};
-        String[] medicalIncidentOutput = inputSetter("Fire Incident", labels, 7);
+        String[] medicalIncidentOutput = inputSetter("Medical Incident", labels, 7);
         return new Object[] {labels, medicalIncidentOutput};
     }
     
@@ -57,9 +57,19 @@ public class Entries {
         String[] personnelOutput = inputSetter("Personnel", labels, 3);
         return new Object[] {labels, personnelOutput};
     }
+    public static Object[] activityOutInput() {
+        String[] labels = {"Activity: ", "Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Pulled out: "};
+        String[] activityOutOutput = inputSetter("Out For Activity", labels, 5);
+        return new Object[] {labels, activityOutOutput};
+    }
+    public static Object[] activityBackInput() {
+        String[] labels = {"Activity: ", "Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Returned: "};
+        String[] activityBackOutput = inputSetter("Return From Activity", labels, 5);
+        return new Object[] {labels, activityBackOutput};
+    }
     public static Object[] activityAttendanceInput() {
-        String[] labels = {"Activity: ", "Name/Callsign of attended: "};
-        String[] activityAttendanceOutput = inputSetter("Activity Attendance", labels, 2);
+        String[] labels = {"Activity: ", "Name/Callsign of attendedees: "};
+        String[] activityAttendanceOutput = inputSetter("In-Base Activity Attendance", labels, 2);
         return new Object[] {labels, activityAttendanceOutput};
     }
     public static Object[] netCallInput() {
@@ -73,6 +83,6 @@ public class Entries {
         return new Object[] {labels, customLogOutput};
     }
      
-    
+    // add activity 
     //String[] entries = {"(Add Entry)", "Fire incident", "Dispatch", "Firetruck log", "Personnel log", "Activity Attendance", "Net Call", "Custom Log"};
 }
