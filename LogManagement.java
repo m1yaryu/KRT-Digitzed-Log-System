@@ -38,10 +38,10 @@ public class LogManagement {
         String timeStamp = new SimpleDateFormat("HHmm'H'").format(new Date());
         entry.append(timeStamp).append("\t");
 
-        entry.append(String.format("%-20s %s\n", labels[0], data[0]));
+        entry.append(String.format("%-23s %s\n", labels[0], data[0]));
         for(int i=1; i<labels.length; i++){
             entry.append("\t");
-            entry.append(String.format("%-20s %s\n", labels[i], data[i]));
+            entry.append(String.format("%-23s %s\n", labels[i], data[i]));
         }
         
         entry.append("\n");

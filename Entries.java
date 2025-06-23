@@ -37,8 +37,8 @@ public class Entries {
     }
 
     public static Object[] medicalInidentInput() {
-        String[] labels = {"Patient Name: ", "Age: ", "Location: ", "Principal Complaint: ", "Actions Taken: ", "Personnel Present: ", "Remarks: "};
-        String[] medicalIncidentOutput = inputSetter("Medical Incident", labels, 7);
+        String[] labels = {"Patient Name: ", "Location: ", "Principal Complaint: ", "Actions Taken: ", "Personnel Present: ", "Remarks: "};
+        String[] medicalIncidentOutput = inputSetter("Medical Incident", labels, 6);
         return new Object[] {labels, medicalIncidentOutput};
     }
     
@@ -82,7 +82,4 @@ public class Entries {
         String[] customLogOutput = inputSetter("Custom Log", labels, 1);
         return new Object[] {labels, customLogOutput};
     }
-     
-    // add activity 
-    //String[] entries = {"(Add Entry)", "Fire incident", "Dispatch", "Firetruck log", "Personnel log", "Activity Attendance", "Net Call", "Custom Log"};
 }

@@ -15,26 +15,46 @@ public class SetUI extends JFrame implements ItemListener{
     public void setUI() {
         setTitle("KRT Logs");
         setSize(1000, 750);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  
         getContentPane().setBackground(Color.DARK_GRAY);
         setLayout(null);
         
         add(createLogHistoryPanel());
         add(createMainHeaderPanel());
         add(createMainViewPanel());
-        add(createButtonsPanel());
         //add(addWindowScrollPane());
 
         setVisible(true);
     }
     
-    public File currentLogFile;
+    public static File currentLogFile;
     private JScrollPane createLogHistoryPanel() {
         JPanel logHistoryPanel = new JPanel();
         logHistoryPanel.setBorder(BorderFactory.createTitledBorder("Logs"));
         logHistoryPanel.setBackground(Color.LIGHT_GRAY);
         logHistoryPanel.setLayout(new BoxLayout(logHistoryPanel, BoxLayout.Y_AXIS));
+
+        JButton addNewLogButton = ButtonFunctionalities.addNewLogButton(this);
+        JButton deleteButton = ButtonFunctionalities.deleteButton(logText, selectedLine, this);
+        JButton saveChangesButton = ButtonFunctionalities.saveChangesButton(logText, currentLogFile, this);
+        JButton refreshButton = ButtonFunctionalities.refreshButton(logText, currentLogFile, this);
+        JButton restartButton = ButtonFunctionalities.restartButton(this);
+        JButton[] buttonSet = {addNewLogButton, deleteButton, saveChangesButton, refreshButton, restartButton};
+
+        for(JButton btn : buttonSet) {
+            btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btn.setMaximumSize(new Dimension(210, btn.getPreferredSize().height));
+            logHistoryPanel.add(Box.createVerticalStrut(5));
+            logHistoryPanel.add(btn);
+        }
+
+        entryComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        entryComboBox.setMaximumSize(new Dimension(210, entryComboBox.getPreferredSize().height));
+        logHistoryPanel.add(add(Box.createVerticalStrut(5)));
+        logHistoryPanel.add(entryComboBox);
+
         
+        /* 
         File currentDirectory = new File("./logFiles");
         File[] txtFiles = currentDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
         //use try catch later
@@ -46,8 +66,8 @@ public class SetUI extends JFrame implements ItemListener{
                 fileButton.setMaximumSize(new Dimension(210, fileButton.getPreferredSize().height));
                 
 				fileButton.addActionListener(e -> {
-					try {
-						logText.setText(java.nio.file.Files.readString(file.toPath()));
+                    try {
+                        logText.setText(java.nio.file.Files.readString(file.toPath()));
                         currentLogFile = file;
 					} 
 					catch (Exception ex){
@@ -58,16 +78,16 @@ public class SetUI extends JFrame implements ItemListener{
                 logHistoryPanel.add(fileButton);
             }
         }
-        
+        */
         JScrollPane scrollPane = new JScrollPane(logHistoryPanel);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBounds(10, 10, 210, 700);
         return scrollPane;
     }
-
+    
 	private JTextArea logText, title;
     private JPanel createMainHeaderPanel() {
-		JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Tite l"));
         panel.setBounds(235, 10, 755, 70);
@@ -78,7 +98,7 @@ public class SetUI extends JFrame implements ItemListener{
 		title.setWrapStyleWord(true);
 		title.setFont(new Font("Sans Serif", Font.BOLD, 34));
 		title.setText("KRT Logs");
-
+        
 		//panel.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.NORTH);
 		//panel.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.SOUTH);
 		//panel.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.EAST);
@@ -87,12 +107,23 @@ public class SetUI extends JFrame implements ItemListener{
 		return panel;
     }
 	
+    public static String currentFileString;
+    public static String setTitleString() {
+        if(currentLogFile==null) {
+            currentFileString = "";
+        }
+        else {
+            currentFileString = currentLogFile.toString();
+        }
+        return currentFileString;
+    }
+
     int selectedLine = -1;
     private JPanel createMainViewPanel() {
-		JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Main Otin"));
-        panel.setBounds(235, 90, 755, 550);
+        panel.setBorder(BorderFactory.createTitledBorder(setTitleString()));
+        panel.setBounds(235, 90, 755, 620);
         panel.setBackground(Color.RED);
 		
 		logText = new JTextArea();
@@ -107,12 +138,12 @@ public class SetUI extends JFrame implements ItemListener{
                 selectEntry(clickPosition);
             }
         });
-
+        
 		panel.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.NORTH);
 		panel.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.SOUTH);
 		panel.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.EAST);
 		panel.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.WEST);
-
+        
 		JScrollPane scrollPane = new JScrollPane(logText);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		panel.add(scrollPane, BorderLayout.CENTER);
@@ -125,18 +156,18 @@ public class SetUI extends JFrame implements ItemListener{
             String[] lines = logText.getText().split("\n");
             int startLine = selectedLine;
             int endLine = selectedLine;
-
+            
             while(startLine > 0 && lines[startLine].startsWith("\t")) {
                 startLine--;
             }
-                
+            
             while(endLine+1<lines.length && lines[endLine+1].startsWith("\t")) {
                 endLine++;
             }
-
+            
             int startOffset = logText.getLineStartOffset(startLine);
             int endOffset = logText.getLineEndOffset(endLine);
-
+            
             logText.setSelectionStart(startOffset);
             logText.setSelectionEnd(endOffset);
         }
@@ -145,64 +176,73 @@ public class SetUI extends JFrame implements ItemListener{
             logText.select(0, 0);
         }
     }
-
+    
     public void entryResult(Object[] entryData) {
         if (entryData == null || currentLogFile == null) {
             JOptionPane.showMessageDialog(this, "No entry data or no log file is open.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
         String[] returnedLabels = (String[]) entryData[0];
         String[] returnedValues = (String[]) entryData[1];
-
+        
         try{
             LogManagement.appendLogEntry(returnedLabels, returnedValues, logText);
-            //logText.setText(java.nio.file.Files.readString(currentLogFile.toPath()));
         }
         catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to write to log file:\n" + e.getMessage());
-        e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to write to log file:\n" + e.getMessage());
+            e.printStackTrace();
         }
     }
     @Override
     public void itemStateChanged(ItemEvent e) {
         if(e.getStateChange() == ItemEvent.SELECTED) {
             String selected = (String) e.getItem();
-
+            
             switch(selected) {
                 case "Fire Incident":
-                    Object[] fireIncidentData = Entries.fireIncidentInput();
-                    entryResult(fireIncidentData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
+                Object[] fireIncidentData = Entries.fireIncidentInput();
+                entryResult(fireIncidentData);
+                entryComboBox.setSelectedIndex(0);
+                break;
                 case "Medical Incident":
-                    Object[] medicalIncidentData = Entries.medicalInidentInput();
-                    entryResult(medicalIncidentData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
+                Object[] medicalIncidentData = Entries.medicalInidentInput();
+                entryResult(medicalIncidentData);
+                entryComboBox.setSelectedIndex(0);
+                break;
                 case "Dispatch":
-                    Object[] dispatchData = Entries.dispatchInput();
-                    entryResult(dispatchData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
+                Object[] dispatchData = Entries.dispatchInput();
+                entryResult(dispatchData);
+                entryComboBox.setSelectedIndex(0);
+                break;
                 case "Firetruck Log":
-                    Object[] firetruckData = Entries.firetruckInput();
-                    entryResult(firetruckData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
-                    case "Personnel Log":
-                    Object[] personnelLogData = Entries.personnelLogInput();
-                    entryResult(personnelLogData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
-                case "Activity Attendance":
-                    Object[] activityAttendanceData = Entries.activityAttendanceInput();
-                    entryResult(activityAttendanceData);
-                    entryComboBox.setSelectedIndex(0);
-                    break;
+                Object[] firetruckData = Entries.firetruckInput();
+                entryResult(firetruckData);
+                entryComboBox.setSelectedIndex(0);
+                break;
+                case "Personnel Log":
+                Object[] personnelLogData = Entries.personnelLogInput();
+                entryResult(personnelLogData);
+                entryComboBox.setSelectedIndex(0);
+                break;
+                case "In-Base Activity Attendance":
+                Object[] activityAttendanceData = Entries.activityAttendanceInput();
+                entryResult(activityAttendanceData);
+                entryComboBox.setSelectedIndex(0);
+                break;
+                case "Out For Activity":
+                Object[] activityOutData = Entries.activityOutInput();
+                entryResult(activityOutData);
+                entryComboBox.setSelectedIndex(0);
+                break;
+                case "Back From Activity":
+                Object[] activityInData = Entries.activityBackInput();
+                entryResult(activityInData);
+                entryComboBox.setSelectedIndex(0);
+                break;
                 case "Net Call":
-                    Object[] netCallData = Entries.netCallInput();
-                    entryResult(netCallData);
+                Object[] netCallData = Entries.netCallInput();
+                entryResult(netCallData);
                     entryComboBox.setSelectedIndex(0);
                     break;
                 case "Custom Log":
@@ -210,9 +250,9 @@ public class SetUI extends JFrame implements ItemListener{
                     entryResult(customLogData);
                     entryComboBox.setSelectedIndex(0);
                     break;
+                }
             }
         }
-    }
 
     private JComboBox<String> entryComboBox() {
         String[] entries = {"(Add Entry)", "Fire Incident","Medical Incident", "Dispatch", "Firetruck Log", "Personnel Log", "Out For Activity", "Back From Activity", "In-Base Activity Attendance", "Net Call", "Custom Log"};
@@ -220,52 +260,5 @@ public class SetUI extends JFrame implements ItemListener{
         entriesCombobox.addItemListener(this);
         return entriesCombobox;
     }
-    JComboBox<String> entryComboBox = entryComboBox();       
-
-    private JPanel createButtonsPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Button pututoy"));
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        panel.setBounds(235, 650, 755, 60);
-        panel.setBackground(Color.YELLOW);
-
-        JButton addNewLog = new JButton("Add New Log");
-        JButton deleteButton = new JButton("Delete");
-        JButton saveChangesButton = new JButton("Save Changes");
-        JButton refreshButton = new JButton("Refresh");
-
-        //LogManagement LogManagement = new LogManagement();
-        addNewLog.addActionListener(e -> {
-            try {
-                LogManagement.createNewLogFile();
-                JOptionPane.showMessageDialog(this, "New log file created!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                restartUI();
-            }
-            catch(IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error creating file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
-        });
-
-        deleteButton.addActionListener(e -> {ButtonFunctionalities.deleteLine(logText, selectedLine, this);});
-        saveChangesButton.addActionListener(e -> {ButtonFunctionalities.saveChangesFunctionality(logText, currentLogFile, this);});
-        refreshButton.addActionListener(e -> {ButtonFunctionalities.refresh(logText, currentLogFile, this);});
-
-        panel.add(entryComboBox);
-        panel.add(addNewLog);
-        panel.add(deleteButton);
-        panel.add(saveChangesButton);
-        panel.add(refreshButton);
-
-        return panel;
-    }
-
-    public void restartUI() {
-        this.dispose();
-
-        SwingUtilities.invokeLater(() -> {
-            SetUI newUI = new SetUI();
-            newUI.setUI();
-        });
-    }
+    JComboBox<String> entryComboBox = entryComboBox();
 }
