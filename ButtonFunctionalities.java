@@ -52,7 +52,7 @@ public class ButtonFunctionalities {
         });
         return deleteButton;
     } 
-
+/*
     public static JButton saveChangesButton(JTextArea textArea, File currentFile, JFrame parentFrame){
         JButton saveChangesButton = new JButton("Save Changes");
         
@@ -69,14 +69,15 @@ public class ButtonFunctionalities {
         });
         return saveChangesButton;
     }
-
-    public static JButton refreshButton(JTextArea textArea, File currentFile, JFrame parenFrame) {
+ */
+    public static JButton refreshButton(JTable table, JScrollPane currentPanel, JFrame parenFrame) {
         JButton refreshButton = new JButton("Refresh");
         
         refreshButton.addActionListener(e -> {
             try {
-                if(currentFile!=null) {
-                    textArea.setText(java.nio.file.Files.readString(currentFile.toPath()));
+                if(table!=null) {
+                    JTable newTable = SetUI.createTable();
+                    currentPanel.add(newTable);
                 }
             }
             catch(Exception ex) {
@@ -85,7 +86,7 @@ public class ButtonFunctionalities {
         });
         return refreshButton;
     }
-
+ 
     public static JButton restartButton(JFrame parenFrame) {
         JButton restartButton = new JButton("Restart");
         restartButton.addActionListener(e -> {restartUI(parenFrame);});
