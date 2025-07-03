@@ -1,5 +1,8 @@
 import javax.swing.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Entries {
     //JTextField locationField, typeOfIncidentField, statusField; 
 
@@ -24,62 +27,80 @@ public class Entries {
                 values[i] = fields[i].getText();
             }
             return values;
-        }
+        } 
         else{
             return null;
         }
     }
 
     public static Object[] fireIncidentInput() {
-        String[] labels = {"Type of Incident: ", "Location: ", "Status: ", "Dispatcher: "};
+        String[] labels = {"Type of Incident: ", "Location: ", "Status: ", "Dispatcher: ", "Logged by: "};
         String[] fireIncidentOutput = inputSetter("Fire Incident", labels, labels.length);
         return new Object[] {labels, fireIncidentOutput};
     }
 
     public static Object[] medicalInidentInput() {
-        String[] labels = {"Patient Name: ", "Location: ", "Principal Complaint: ", "Actions Taken: ", "Personnel Present: ", "Remarks: "};
-        String[] medicalIncidentOutput = inputSetter("Medical Incident", labels, 6);
+        String[] labels = {"Patient Name: ", "Location: ", "Principal Complaint: ", "Actions Taken: ", "Personnel Present: ", "Remarks: ", "Logged by: "};
+        String[] medicalIncidentOutput = inputSetter("Medical Incident", labels, labels.length);
         return new Object[] {labels, medicalIncidentOutput};
     }
     
     public static Object[] dispatchInput() {
-        String[] labels = {"Location: ", "Firetruck Dispatched: ", "Delta: ", "Dispatched/Advised by: "};
-        String[] dispatcherOutput = inputSetter("Dispatch", labels, 4);
+        String[] labels = {"Firetruck Dispatched: ", "Location: ", "Delta: ", "Dispatched/Advised by: ", "Logged by: "};
+        String[] dispatcherOutput = inputSetter("Dispatch", labels, labels.length);
         return new Object[] {labels, dispatcherOutput};
-    }
+    }   
     public static Object[] firetruckInput() {
-        String[] labels = {"Firetruck: ", "Activity: ", "Status: "};
-        String[] firetruckOutput = inputSetter("Firetruck", labels, 3);
+        String[] labels = {"Firetruck: ", "Location: ","Activity: ", "Status: ", "Logged by: "};
+        String[] firetruckOutput = inputSetter("Firetruck", labels, labels.length);
         return new Object[] {labels, firetruckOutput};
         }
     public static Object[] personnelLogInput() {
-        String[] labels = {"Name: ", "Callsign: ", "Status: "};
-        String[] personnelOutput = inputSetter("Personnel", labels, 3);
+        String[] labels = {"Name: ", "Callsign: ", "Status: ", "Logged by: "};
+        String[] personnelOutput = inputSetter("Personnel", labels, labels.length);
         return new Object[] {labels, personnelOutput};
     }
     public static Object[] activityOutInput() {
-        String[] labels = {"Activity: ", "Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Pulled out: "};
-        String[] activityOutOutput = inputSetter("Out For Activity", labels, 5);
+        String[] labels = {"Activity: ", "Location: ","Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Pulled out: ", "Logged by: "};
+        String[] activityOutOutput = inputSetter("Out For Activity", labels, labels.length);
         return new Object[] {labels, activityOutOutput};
     }
     public static Object[] activityBackInput() {
-        String[] labels = {"Activity: ", "Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Returned: "};
-        String[] activityBackOutput = inputSetter("Return From Activity", labels, 5);
+        String[] labels = {"Activity: ", "Personnel Present & Assigned Radios: ", "Vehicle: ", "Delta: ", "Equipment Returned: ", "Logged by: "};
+        String[] activityBackOutput = inputSetter("Return From Activity", labels, labels.length);
         return new Object[] {labels, activityBackOutput};
     }
     public static Object[] activityAttendanceInput() {
-        String[] labels = {"Activity: ", "Name/Callsign of attendedees: "};
-        String[] activityAttendanceOutput = inputSetter("In-Base Activity Attendance", labels, 2);
+        String[] labels = {"Activity: ", "Name: ", "Callsign: ", "Logged by: "};
+        String[] activityAttendanceOutput = inputSetter("In-Base Activity Attendance", labels, labels.length);
         return new Object[] {labels, activityAttendanceOutput};
     }
     public static Object[] netCallInput() {
-        String[] labels = {"Callsign: ", "Location: "};
-        String[] netCallOutput = inputSetter("Net Call", labels, 2);
-        return new Object[] {labels, netCallOutput};
+        String[] labels = {"Callsign: ", "Location: ", "Logged by: "};
+        List<String[]> entries = new ArrayList<>();
+        
+        String[] loggedByLabel = {"Logged by: "};
+        String[] loggedByInput = inputSetter("Net Call - Logged By", loggedByLabel, 1);
+
+        if(loggedByInput != null) {
+            return null;
+        }
+        while(true) {
+            String[] result = inputSetter("Net Call", labels, labels.length);
+            if(result == null) {
+                break;
+            }
+            entries.add(result);
+        }
+        return new Object[] {
+            new Object[] {labels, loggedByLabel},
+            new Object[] {entries.toArray(new String[0][0]), loggedByInput[0]}
+        };
     }
+
     public static Object[] customLogInput() {
         String[] labels = {"Enter log: "};
-        String[] customLogOutput = inputSetter("Custom Log", labels, 1);
+        String[] customLogOutput = inputSetter("Custom Log", labels, labels.length);
         return new Object[] {labels, customLogOutput};
     }
 }
